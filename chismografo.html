@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chismógrafo CET1 - Periódico Escolar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #e5f4e3;
+    }
+    .tab-button.active {
+      background-color: #8b0000;
+      color: white;
+      transform: scale(1.05);
+    }
+    .tab-button:hover:not(.active) {
+      background-color: #a1c99a;
+    }
+    .floating-btn {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+    .chisme-card {
+      transition: all 0.3s ease;
+    }
+    .chisme-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .like-btn.active {
+      color: #dc2626;
+    }
+    .dislike-btn.active {
+      color: #2563eb;
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-green-900 to-green-700 p-6 text-center relative">
+      <div class="absolute top-4 right-4">
+        <button onclick="toggleDarkMode()" class="bg-white bg-opacity-20 p-2 rounded-full text-white">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+      <h1 class="text-4xl font-bold text-white">
+        <i class="fas fa-newspaper mr-2"></i> El Chismógrafo - CET1
+      </h1>
+      <p class="text-green-100">¡El periódico donde el chisme se convierte en historia!</p>
+    </div>
+
+    <!-- Tabs navigation -->
+    <div class="bg-green-100 p-4 sticky top-0 z-10 shadow-sm">
+      <div class="flex overflow-x-auto pb-2 space-x-2">
+        <button onclick="showTab('calientes')" class="tab-button flex-shrink-0 px-4 py-2 rounded-full font-medium active">
+          <i class="fas fa-fire mr-1"></i> Chismes calientes
+        </button>
+        <button onclick="showTab('profes')" class="tab-button flex-shrink-0 px-4 py-2 rounded-full font-medium">
+          <i class="fas fa-chalkboard-teacher mr-1"></i> Profesores
+        </button>
+        <button onclick="showTab('peleas')" class="tab-button flex-shrink-0 px-4 py-2 rounded-full font-medium">
+          <i class="fas fa-fist-raised mr-1"></i> Peleas
+        </button>
+        <button onclick="showTab('polemicas')" class="tab-button flex-shrink-0 px-4 py-2 rounded-full font-medium">
+          <i class="fas fa-comment-dots mr-1"></i> Polémicas
+        </button>
+        <button onclick="showTab('confesiones')" class="tab-button flex-shrink-0 px-4 py-2 rounded-full font-medium">
+          <i class="fas fa-user-secret mr-1"></i> Confesiones
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="p-6 bg-white">
+      <!-- Form Area -->
+      <div id="calientes" class="tab-content">
+        <h2 class="text-xl font-semibold text-green-800 mb-2">🔥 Chismes calientes</h2>
+        <input type="text" id="calientes-title" placeholder="Título del chisme" class="w-full border border-green-300 rounded-md p-2 mb-2">
+        <textarea id="calientes-content" placeholder="Escribe tu chisme..." rows="4" class="w-full border border-green-300 rounded-md p-2 mb-4"></textarea>
+        <button onclick="publishChisme('calientes')" class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-md transition flex items-center justify-center">
+          <i class="fas fa-paper-plane mr-2"></i> Publicar
+        </button>
+      </div>
+      
+      <div id="profes" class="tab-content hidden">
+        <h2 class="text-xl font-semibold text-green-800 mb-2">📚 Profesores</h2>
+        <input type="text" id="profes-title" placeholder="Título del chisme" class="w-full border border-green-300 rounded-md p-2 mb-2">
+        <textarea id="profes-content" placeholder="Comenta sobre los profes..." rows="4" class="w-full border border-green-300 rounded-md p-2 mb-4"></textarea>
+        <button onclick="publishChisme('profes')" class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-md transition flex items-center justify-center">
+          <i class="fas fa-paper-plane mr-2"></i> Publicar
+        </button>
+      </div>
+      
+      <div id="peleas" class="tab-content hidden">
+        <h2 class="text-xl font-semibold text-green-800 mb-2">👊 Peleas</h2>
+        <input type="text" id="peleas-title" placeholder="Título del chisme" class="w-full border border-green-300 rounded-md p-2 mb-2">
+        <textarea id="peleas-content" placeholder="Relata la pelea más épica..." rows="4" class="w-full border border-green-300 rounded-md p-2 mb-4"></textarea>
+        <button onclick="publishChisme('peleas')" class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-md transition flex items-center justify-center">
+          <i class="fas fa-paper-plane mr-2"></i> Publicar
+        </button>
+      </div>
+      
+      <div id="polemicas" class="tab-content hidden">
+        <h2 class="text-xl font-semibold text-green-800 mb-2">🗯️ Polémicas</h2>
+        <input type="text" id="polemicas-title" placeholder="Título del chisme" class="w-full border border-green-300 rounded-md p-2 mb-2">
+        <textarea id="polemicas-content" placeholder="Opina sobre las polémicas..." rows="4" class="w-full border border-green-300 rounded-md p-2 mb-4"></textarea>
+        <button onclick="publishChisme('polemicas')" class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-md transition flex items-center justify-center">
+          <i class="fas fa-paper-plane mr-2"></i> Publicar
+        </button>
+      </div>
+      
+      <div id="confesiones" class="tab-content hidden">
+        <h2 class="text-xl font-semibold text-green-800 mb-2">💌 Confesiones</h2>
+        <input type="text" id="confesiones-title" placeholder="Título del chisme" class="w-full border border-green-300 rounded-md p-2 mb-2">
+        <textarea id="confesiones-content" placeholder="Confiesa algo anónimo..." rows="4" class="w-full border border-green-300 rounded-md p-2 mb-4"></textarea>
+        <button onclick="publishChisme('confesiones')" class="bg-green-800 hover:bg-green-900 text-white px-4 py-2 rounded-md transition flex items-center justify-center">
+          <i class="fas fa-paper-plane mr-2"></i> Publicar
+        </button>
+      </div>
+
+      <!-- Chismes Publicados -->
+      <div class="mt-8">
+        <h2 class="text-2xl font-bold text-green-800 mb-4 flex items-center">
+          <i class="fas fa-bolt mr-2"></i> Chismes Recientes
+        </h2>
+        
+        <div class="flex mb-4">
+          <button onclick="filterChismes('all')" class="filter-btn active bg-green-800 text-white px-3 py-1 rounded-full text-sm mr-2">
+            Todos
+          </button>
+          <button onclick="filterChismes('calientes')" class="filter-btn bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm mr-2">
+            <i class="fas fa-fire mr-1"></i> Calientes
+          </button>
+          <button onclick="filterChismes('profes')" class="filter-btn bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm mr-2">
+            <i class="fas fa-chalkboard-teacher mr-1"></i> Profes
+          </button>
+          <button onclick="filterChismes('peleas')" class="filter-btn bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm mr-2">
+            <i class="fas fa-fist-raised mr-1"></i> Peleas
+          </button>
+          <button onclick="filterChismes('polemicas')" class="filter-btn bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm mr-2">
+            <i class="fas fa-comment-dots mr-1"></i> Polémicas
+          </button>
+          <button onclick="filterChismes('confesiones')" class="filter-btn bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">
+            <i class="fas fa-user-secret mr-1"></i> Confesiones
+          </button>
+        </div>
+        
+        <div id="chismes-container" class="space-y-4">
+          <!-- Chismes se cargarán aquí dinámicamente -->
+        </div>
+        
+        <div id="no-chismes" class="text-center py-8 text-gray-500">
+          <i class="fas fa-comment-slash text-4xl mb-2"></i>
+          <p>No hay chismes aún. ¡Sé el primero en publicar!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-green-100 px-6 py-4 text-center text-sm text-green-700">
+      <p>Todos los comentarios son anónimos. ¡Exprésate libremente, pero con respeto!</p>
+      <p class="mt-1">© 2023 Chismógrafo CET1 - Todos los derechos reservados</p>
+    </div>
+  </div>
+
+  <!-- Botón flotante -->
+  <button onclick="scrollToTop()" id="scroll-top-btn" class="fixed bottom-6 right-6 bg-green-800 text-white p-3 rounded-full shadow-lg hover:bg-green-900 transition hidden floating-btn">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold" id="modal-title">¡Chisme Publicado!</h3>
+        <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p id="modal-message">Tu chisme ha sido publicado con éxito.</p>
+      <div class="mt-4 flex justify-end">
+        <button onclick="closeModal()" class="bg-green-800 text-white px-4 py-2 rounded-md">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Datos iniciales de chismes
+    let chismes = JSON.parse(localStorage.getItem('chismes')) || [
+      {
+        id: 1,
+        category: 'calientes',
+        title: '¡Pareja secreta en 3IM07!',
+        content: 'Varios testigos reportan que dos compañeros de 3IM07 han estado saliendo en secreto durante meses. ¿Quiénes serán? 👀',
+        date: '2023-05-15T10:30:00',
+        likes: 24,
+        dislikes: 2,
+        comments: 5
+      },
+      {
+        id: 2,
+        category: 'profes',
+        title: 'El profe de física pasó a todos',
+        content: 'Por primera vez en la historia, el profe más estricto pasó a todo el grupo sin excepción. ¿Será que se ablandó?',
+        date: '2023-05-14T16:45:00',
+        likes: 18,
+        dislikes: 3,
+        comments: 8
+      },
+      {
+        id: 3,
+        category: 'peleas',
+        title: 'Gran pelea en el patio',
+        content: 'Ayer durante el recreo hubo una pelea épica entre dos alumnos del 4IM13 y del 2IM07. Terminaron en dirección pero todos saben quién ganó.',
+        date: '2023-05-13T12:15:00',
+        likes: 32,
+        dislikes: 5,
+        comments: 12
+      },
+      {
+        id: 4,
+        category: 'polemicas',
+        title: 'Cambios en el uniforme',
+        content: 'La dirección está considerando cambiar el uniforme escolar. Algunos están a favor, otros en contra. ¿Qué opinas?',
+        date: '2023-05-12T09:00:00',
+        likes: 15,
+        dislikes: 10,
+        comments: 7
+      },
+      {
+        id: 5,
+        category: 'confesiones',
+        title: 'Confesión anónima',
+        content: 'Tengo que confesar que desde primero me gusta alguien de este salón, pero nunca me he atrevido a decírselo.',
+        date: '2023-05-11T14:20:00',
+        likes: 28,
+        dislikes: 1,
+        comments: 3
+      }
+        
+    ];
+
+    // Mostrar u ocultar tabs
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById(tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(button => {
+        if (button.textContent.toLowerCase().includes(tabId)) {
+          button.classList.add('active');
+        }
+      });
+    }
+
+    // Publicar un nuevo chisme
+    function publishChisme(category) {
+      const titleInput = document.getElementById(`${category}-title`);
+      const contentInput = document.getElementById(`${category}-content`);
+      
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      
+      if (!title || !content) {
+        showModal('Error', 'Por favor completa todos los campos');
+        return;
+      }
+      
+      const newChisme = {
+        id: Date.now(),
+        category,
+        title,
+        content,
+        date: new Date().toISOString(),
+        likes: 0,
+        dislikes: 0,
+        comments: 0
+      };
+      
+      chismes.unshift(newChisme);
+      saveChismes();
+      
+      // Limpiar campos
+      titleInput.value = '';
+      contentInput.value = '';
+      
+      showModal('¡Éxito!', 'Tu chisme ha sido publicado');
+      renderChismes();
+    }
+
+    // Guardar chismes en localStorage
+    function saveChismes() {
+      localStorage.setItem('chismes', JSON.stringify(chismes));
+    }
+
+    // Mostrar chismes en el contenedor
+    function renderChismes(filter = 'all') {
+      const container = document.getElementById('chismes-container');
+      const noChismes = document.getElementById('no-chismes');
+      
+      container.innerHTML = '';
+      
+      const filteredChismes = filter === 'all' 
+        ? chismes 
+        : chismes.filter(chisme => chisme.category === filter);
+      
+      if (filteredChismes.length === 0) {
+        noChismes.classList.remove('hidden');
+        return;
+      }
+      
+      noChismes.classList.add('hidden');
+      
+      filteredChismes.forEach(chisme => {
+        const chismeElement = document.createElement('div');
+        chismeElement.className = 'chisme-card bg-white p-4 rounded-lg border border-gray-200 shadow-sm';
+        
+        // Determinar color según categoría
+        let categoryColor, categoryIcon;
+        switch(chisme.category) {
+          case 'calientes':
+            categoryColor = 'bg-red-100 text-red-800';
+            categoryIcon = 'fa-fire';
+            break;
+          case 'profes':
+            categoryColor = 'bg-blue-100 text-blue-800';
+            categoryIcon = 'fa-chalkboard-teacher';
+            break;
+          case 'peleas':
+            categoryColor = 'bg-yellow-100 text-yellow-800';
+            categoryIcon = 'fa-fist-raised';
+            break;
+          case 'polemicas':
+            categoryColor = 'bg-purple-100 text-purple-800';
+            categoryIcon = 'fa-comment-dots';
+            break;
+          case 'confesiones':
+            categoryColor = 'bg-pink-100 text-pink-800';
+            categoryIcon = 'fa-user-secret';
+            break;
+          default:
+            categoryColor = 'bg-gray-100 text-gray-800';
+            categoryIcon = 'fa-comment';
+        }
+        
+        chismeElement.innerHTML = `
+          <div class="flex justify-between items-start">
+            <span class="${categoryColor} text-xs font-semibold px-2 py-1 rounded-full">
+              <i class="fas ${categoryIcon} mr-1"></i>
+              ${chisme.category.charAt(0).toUpperCase() + chisme.category.slice(1)}
+            </span>
+            <span class="text-xs text-gray-500">${formatDate(chisme.date)}</span>
+          </div>
+          <h3 class="font-bold text-lg mt-2">${chisme.title}</h3>
+          <p class="text-gray-700 mt-1">${chisme.content}</p>
+          <div class="flex justify-between items-center mt-4">
+            <div class="flex space-x-3">
+              <button onclick="likeChisme(${chisme.id})" class="like-btn text-gray-500 hover:text-red-500">
+                <i class="fas fa-thumbs-up mr-1"></i> ${chisme.likes}
+              </button>
+              <button onclick="dislikeChisme(${chisme.id})" class="dislike-btn text-gray-500 hover:text-blue-500">
+                <i class="fas fa-thumbs-down mr-1"></i> ${chisme.dislikes}
+              </button>
+              <button class="text-gray-500 hover:text-green-600">
+                <i class="fas fa-comment mr-1"></i> ${chisme.comments}
+              </button>
+            </div>
+            <button onclick="shareChisme(${chisme.id})" class="text-gray-500 hover:text-green-800">
+              <i class="fas fa-share-alt"></i>
+            </button>
+          </div>
+        `;
+        
+        container.appendChild(chismeElement);
+      });
+    }
+
+    // Filtrar chismes por categoría
+    function filterChismes(category) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderChismes(category);
+    }
+
+    // Dar like a un chisme
+    function likeChisme(id) {
+      const chisme = chismes.find(c => c.id === id);
+      if (chisme) {
+        chisme.likes++;
+        saveChismes();
+        renderChismes(document.querySelector('.filter-btn.active').dataset.filter || 'all');
+        
+        // Animación
+        const btn = event.target.closest('button');
+        btn.classList.add('active', 'pulse');
+        setTimeout(() => btn.classList.remove('pulse'), 2000);
+      }
+    }
+
+    // Dar dislike a un chisme
+    function dislikeChisme(id) {
+      const chisme = chismes.find(c => c.id === id);
+      if (chisme) {
+        chisme.dislikes++;
+        saveChismes();
+        renderChismes(document.querySelector('.filter-btn.active').dataset.filter || 'all');
+        
+        // Animación
+        const btn = event.target.closest('button');
+        btn.classList.add('active', 'pulse');
+        setTimeout(() => btn.classList.remove('pulse'), 2000);
+      }
+    }
+
+    // Compartir chisme
+    function shareChisme(id) {
+      const chisme = chismes.find(c => c.id === id);
+      if (chisme) {
+        if (navigator.share) {
+          navigator.share({
+            title: `Chisme CET1: ${chisme.title}`,
+            text: chisme.content,
+            url: window.location.href
+          }).catch(err => {
+            console.log('Error al compartir:', err);
+          });
+        } else {
+          // Fallback para navegadores que no soportan Web Share API
+          const shareUrl = `${window.location.href}?chisme=${id}`;
+          prompt('Copiar este enlace para compartir:', shareUrl);
+        }
+      }
+    }
+
+    // Formatear fecha
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      const now = new Date();
+      
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      if (diffInSeconds < 60) {
+        return 'hace unos segundos';
+      }
+      
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      if (diffInMinutes < 60) {
+        return `hace ${diffInMinutes} minuto${diffInMinutes !== 1 ? 's' : ''}`;
+      }
+      
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) {
+        return `hace ${diffInHours} hora${diffInHours !== 1 ? 's' : ''}`;
+      }
+      
+      const diffInDays = Math.floor(diffInHours / 24);
+      if (diffInDays < 7) {
+        return `hace ${diffInDays} día${diffInDays !== 1 ? 's' : ''}`;
+      }
+      
+      return date.toLocaleDateString('es-MX', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+
+    // Mostrar modal
+    function showModal(title, message) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-message').textContent = message;
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    // Cerrar modal
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    // Scroll to top
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      // Aquí podrías implementar un dark mode completo si lo deseas
+      showModal('Próximamente', 'El modo oscuro estará disponible en la próxima actualización');
+    }
+
+    // Mostrar u ocultar botón de scroll
+    window.onscroll = function() {
+      const scrollBtn = document.getElementById('scroll-top-btn');
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        scrollBtn.classList.remove('hidden');
+      } else {
+        scrollBtn.classList.add('hidden');
+      }
+    };
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      // Configurar botones de filtro
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.dataset.filter = btn.textContent.trim().toLowerCase().includes('todos') ? 'all' : 
+          btn.textContent.trim().toLowerCase().includes('calientes') ? 'calientes' :
+          btn.textContent.trim().toLowerCase().includes('profes') ? 'profes' :
+          btn.textContent.trim().toLowerCase().includes('peleas') ? 'peleas' :
+          btn.textContent.trim().toLowerCase().includes('polémicas') ? 'polemicas' : 'confesiones';
+      });
+      
+      renderChismes();
+    });
+  </script>
+</body>
+</html>
